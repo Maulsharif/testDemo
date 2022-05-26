@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 using testDemo.Data;
 using testDemo.IRepo;
 using testDemo.Repo;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace testDemo
 {
@@ -32,13 +35,54 @@ namespace testDemo
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+           
+           services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = TokenConstants.Issuer,
+            ValidAudience = TokenConstants.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenConstants.SigningKey))
+        };
+    });
             services.AddAutoMapper(typeof(Startup));
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(opt =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "testDemo", Version = "v1" });
-            });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "testDemo", Version = "v1" });
+                opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+
+                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                 {
+                    new OpenApiSecurityScheme
+                    {
+                         Reference = new OpenApiReference
+                         {
+                           Type=ReferenceType.SecurityScheme,
+                           Id="Bearer"
+                          }
+                    },new string[]{}
+                 }
+                });
+             });
+            services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
             services.AddScoped<IFlightRepository, FlightRepo>();
             services.AddScoped<IFlightFilter, FilterService>();
@@ -58,7 +102,7 @@ namespace testDemo
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -42,7 +42,7 @@ namespace testDemo.Controllers
         }
 
         [Route("create")]
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Moderator")]
         public async Task<ActionResult<Flight>> Create([FromBody] FlightDto flightDto)
         {
             var flightModel = _mapper.Map<Flight>(flightDto);
@@ -50,7 +50,7 @@ namespace testDemo.Controllers
         }
 
         [Route("edit")]
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Moderator")]
         public async Task<ActionResult> EditStatus([FromBody] FlightEditDto flightEditDto)
         {
            await  _repo.EditFlight(flightEditDto);
