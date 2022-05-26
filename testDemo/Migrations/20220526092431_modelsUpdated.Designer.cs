@@ -10,8 +10,8 @@ using testDemo.Data;
 namespace testDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220526085521_models")]
-    partial class models
+    [Migration("20220526092431_modelsUpdated")]
+    partial class modelsUpdated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,7 @@ namespace testDemo.Migrations
                     b.HasData(
                         new
                         {
-                            ID = new Guid("518657fd-d12f-4854-9f77-7aaeacdf0e72"),
+                            ID = new Guid("836f0eae-e563-436f-92e6-42d77a1d9580"),
                             Code = "Moderator"
                         });
                 });
@@ -59,14 +59,16 @@ namespace testDemo.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
-                            ID = new Guid("89afa7ab-3eb9-4eff-80b8-163fef0b31c7"),
+                            ID = new Guid("ec9fc0e9-6796-4ca6-9586-681efacebf21"),
                             Password = "admin123",
-                            RoleId = new Guid("518657fd-d12f-4854-9f77-7aaeacdf0e72"),
+                            RoleId = new Guid("836f0eae-e563-436f-92e6-42d77a1d9580"),
                             UserName = "admin@com"
                         });
                 });
@@ -95,6 +97,17 @@ namespace testDemo.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Flights");
+                });
+
+            modelBuilder.Entity("testDemo.Models.Auth.User", b =>
+                {
+                    b.HasOne("testDemo.Models.Auth.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

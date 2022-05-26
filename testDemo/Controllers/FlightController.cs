@@ -35,7 +35,7 @@ namespace testDemo.Controllers
         public async Task<ActionResult<IEnumerable<FlightDto>>> GetAllFlights(string origin = null, string destination = null)
         {
             var fligths = await _filter.FilterByOriginAndDest(origin, destination);
-            if(fligths != null)
+            if(fligths?.Count() > 0)
                  return Ok(fligths);
             return NoContent();
            

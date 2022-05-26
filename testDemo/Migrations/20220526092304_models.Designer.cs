@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using testDemo.Data;
 
 namespace testDemo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220526092304_models")]
+    partial class models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +37,7 @@ namespace testDemo.Migrations
                     b.HasData(
                         new
                         {
-                            ID = new Guid("836f0eae-e563-436f-92e6-42d77a1d9580"),
+                            ID = new Guid("18eb5eeb-affb-4e39-b75e-c2655a800707"),
                             Code = "Moderator"
                         });
                 });
@@ -64,9 +66,9 @@ namespace testDemo.Migrations
                     b.HasData(
                         new
                         {
-                            ID = new Guid("ec9fc0e9-6796-4ca6-9586-681efacebf21"),
+                            ID = new Guid("6c71c08c-57a2-454c-b8c3-270271228d2f"),
                             Password = "admin123",
-                            RoleId = new Guid("836f0eae-e563-436f-92e6-42d77a1d9580"),
+                            RoleId = new Guid("18eb5eeb-affb-4e39-b75e-c2655a800707"),
                             UserName = "admin@com"
                         });
                 });

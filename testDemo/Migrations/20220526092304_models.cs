@@ -47,17 +47,28 @@ namespace testDemo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "ID", "Code" },
-                values: new object[] { new Guid("518657fd-d12f-4854-9f77-7aaeacdf0e72"), "Moderator" });
+                values: new object[] { new Guid("18eb5eeb-affb-4e39-b75e-c2655a800707"), "Moderator" });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "ID", "Password", "RoleId", "UserName" },
-                values: new object[] { new Guid("89afa7ab-3eb9-4eff-80b8-163fef0b31c7"), "admin123", new Guid("518657fd-d12f-4854-9f77-7aaeacdf0e72"), "admin@com" });
+                values: new object[] { new Guid("6c71c08c-57a2-454c-b8c3-270271228d2f"), "admin123", new Guid("18eb5eeb-affb-4e39-b75e-c2655a800707"), "admin@com" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_RoleId",
+                table: "Users",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -66,10 +77,10 @@ namespace testDemo.Migrations
                 name: "Flights");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Roles");
         }
     }
 }

@@ -19,6 +19,8 @@ using testDemo.Repo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using testDemo.IServices;
+using testDemo.Services;
 
 namespace testDemo
 {
@@ -34,8 +36,6 @@ namespace testDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-           
            services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -85,7 +85,10 @@ namespace testDemo
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
             services.AddScoped<IFlightRepository, FlightRepo>();
+            services.AddScoped<IUserRepository, UserRepo>();
+            services.AddScoped<IRoleRepository, RoleRepo>();
             services.AddScoped<IFlightFilter, FilterService>();
+            services.AddScoped<IAuthService, AuthService>();
 
         }
 

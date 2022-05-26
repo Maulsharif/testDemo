@@ -7,7 +7,6 @@ namespace testDemo.Models.Auth
     public class Role
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid  ID { get; set; }
         public string Code { get; set; }
     }

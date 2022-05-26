@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using testDemo.Dto.Auth;
+using testDemo.IServices;
 using testDemo.Models.Auth;
 
 namespace testDemo.Controllers
@@ -15,35 +17,22 @@ namespace testDemo.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel user)
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
         {
-            if (user is null)
+            _authService = authService;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel login)
+        {
+            if (login is null)
             {
                 return BadRequest("Invalid client request");
             }
-
-            if (user.UserName == "admin@com" && user.Password == "admin123")
+            if ( await _authService.CheckUser(login))
             {
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenConstants.SigningKey));
-                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, "Moderator")
-                };
-
-                var tokeOptions = new JwtSecurityToken(
-                    issuer: TokenConstants.Issuer,
-                    audience: TokenConstants.Audience,
-                    claims: claims,
-                    expires: DateTime.Now.AddMinutes(TokenConstants.ExpiryInMinutes),
-                    signingCredentials: signinCredentials
-                );
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-
+                string tokenString = await  _authService.GetToken(login);
                 return Ok(new AuthenticatedResponse { Token = tokenString });
             }
 
