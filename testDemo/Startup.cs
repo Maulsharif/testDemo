@@ -41,7 +41,8 @@ namespace testDemo
             });
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
             services.AddScoped<IFlightRepository, FlightRepo>();
-            
+            services.AddScoped<IFlightFilter, FilterService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
