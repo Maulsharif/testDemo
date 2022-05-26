@@ -2,15 +2,20 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
+using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using testDemo.Data;
+using testDemo.IRepo;
+using testDemo.Repo;
 
 namespace testDemo
 {
@@ -28,10 +33,15 @@ namespace testDemo
         {
 
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
+            string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "testDemo", Version = "v1" });
             });
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
+            services.AddScoped<IFlightRepository, FlightRepo>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
