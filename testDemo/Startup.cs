@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using testDemo.IServices;
 using testDemo.Services;
+using testDemo.Config;
 
 namespace testDemo
 {
@@ -84,11 +85,8 @@ namespace testDemo
              });
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
-            services.AddScoped<IFlightRepository, FlightRepo>();
-            services.AddScoped<IUserRepository, UserRepo>();
-            services.AddScoped<IRoleRepository, RoleRepo>();
-            services.AddScoped<IFlightFilter, FilterService>();
-            services.AddScoped<IAuthService, AuthService>();
+            ServiceRegistration.Setup(services, Configuration);
+
 
         }
 
